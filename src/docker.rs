@@ -375,7 +375,7 @@ impl Docker {
         &'a self,
         endpoint: impl AsRef<str> + 'a,
         body: Payload<B>,
-    ) -> Result<impl AsyncRead + AsyncWrite + 'a>
+    ) -> Result<impl AsyncRead + AsyncWrite>
     where
         B: Into<Body> + 'a,
     {

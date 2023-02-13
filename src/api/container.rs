@@ -44,7 +44,7 @@ impl Container {
     }}
 
     /// Attaches a multiplexed TCP stream to the container that can be used to read Stdout, Stderr and write Stdin.
-    async fn attach_raw(&self) -> Result<impl AsyncRead + AsyncWrite + Send + '_> {
+    async fn attach_raw(&self) -> Result<impl AsyncRead + AsyncWrite + Send> {
         self.docker
             .post_upgrade_stream(
                 format!(
@@ -63,7 +63,7 @@ impl Container {
     /// The [`TtyMultiplexer`](TtyMultiplexer) implements Stream for returning Stdout and Stderr chunks. It also implements [`AsyncWrite`](futures_util::io::AsyncWrite) for writing to Stdin.
     ///
     /// The multiplexer can be split into its read and write halves with the [`split`](TtyMultiplexer::split) method
-    pub async fn attach(&self) -> Result<tty::Multiplexer<'_>> {
+    pub async fn attach(&self) -> Result<tty::Multiplexer> {
         let inspect = self.inspect().await?;
         let is_tty = inspect.config.and_then(|c| c.tty).unwrap_or_default();
         self.attach_raw().await.map(|s| if is_tty {
